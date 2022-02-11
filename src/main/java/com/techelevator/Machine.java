@@ -4,12 +4,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Machine {
     //balance (starts at 0) (for each user session)
-    private double balance = 0;
+    //private double balance = 0;
+    private BigDecimal balance = new BigDecimal("0.00");
     private Object LocalDateTime;
 
 
@@ -54,56 +58,47 @@ public class Machine {
                 int dimes = 0;
                 int nickels = 0;
 
-                while (purchaseMenuSelection.equals("1")) {
+                if (purchaseMenuSelection.equals("1")) {
                     System.out.println("Please feed money in whole dollar amounts of $1, $2, $5, or $10.");
                     System.out.print(">>> ");
                     String moneyFed = userInput.nextLine();
-                     int money = Integer.parseInt(moneyFed);
-                   if (money % 2 == 0 || money % 5 == 0  && money > 0){
-                       balance += money;
+                    int money = Integer.parseInt(moneyFed);
+                   if (money == 1 || money == 2 || money == 5 || money == 10){
+                       balance = balance.add(new BigDecimal(moneyFed));
                        break;
                    }
                     System.out.println("Invalid input");
-                   break;
-                    //this is if they feed money
-                    //launch some feed money ui
-                    //update balance or do nothing
-                    //show purchase menu again if they exit this feed money menu
                 }
 
-                while (purchaseMenuSelection.equals("2")) {
-
-                    if (balance == 0) {
+                if (purchaseMenuSelection.equals("2")) {
+                    if (balance.compareTo(new BigDecimal("0")) == 0) {
                         System.out.println("You have a balance of $0. Please feed more money.");
                         break;
                     }
-
-
                     ui.displayMachineItems(stock);
                     System.out.println("Enter item code");
                     System.out.print(">>> ");
                     String itemCode = userInput.nextLine();
-                    boolean productSelection = ui.selectProductDisplay(stock, balance, itemCode);
+                    boolean productSelection = ui.selectProductDisplay(stock, itemCode);
                     if (productSelection) {
+                        BigDecimal itemPrice = BigDecimal.valueOf(stock.getStockMap().get(itemCode).getPrice());
+                        if (balance.compareTo(itemPrice) < 0) {
+                            System.out.println("Balance is insufficient. Please feed more money.");
+                            break;
+                        }
+                        System.out.println(stock.getStockMap().get(itemCode).printMessage());
                         stock.getStockMap().get(itemCode).decreaseCount();
-                        balance -= stock.getStockMap().get(itemCode).getPrice();
-
+                        balance = balance.subtract(itemPrice);
                     }
-
-                  //  purchaseMenuSelection = ui.purchaseMenu(balance);
-                    if (purchaseMenuSelection != "2") {
-                        break;
-                    }
-
                 }
 
                 if (purchaseMenuSelection.equals("3")) {
-                    quarters = (int)(balance / .25);
-                    double quarterRemainder = balance % .25;
-                    dimes = (int)(quarterRemainder / .10);
-                    double dimeremainder = quarterRemainder % .10;
-                    nickels = (int)(dimeremainder / .05);
-                    balance = 0;
+                    quarters = (balance.divide(new BigDecimal("0.25"), 2, RoundingMode.UP)).intValue();
+                    BigDecimal quarterRemainder = balance.remainder(new BigDecimal("0.25"));
+                    dimes = (quarterRemainder.divide(new BigDecimal("0.10"), 2, RoundingMode.UP)).intValue();                 //(int)(quarterRemainder / .10);
+                    BigDecimal dimeremainder = quarterRemainder.remainder(new BigDecimal("0.10"));                                      //quarterRemainder % .10;
+                    nickels = (dimeremainder.divide(new BigDecimal("0.05"), 2, RoundingMode.UP)).intValue();                  //(int)(dimeremainder / .05);
+                    balance = new BigDecimal("0.00");
                     ui.finishTransactionDisplay(quarters, dimes, nickels);
                     mainMenuSelection = ui.mainMenu();
                 }

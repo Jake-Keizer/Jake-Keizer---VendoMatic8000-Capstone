@@ -1,5 +1,6 @@
 package com.techelevator;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 public class UserInterface {
@@ -30,12 +31,12 @@ public class UserInterface {
         }
     }
 
-    public String purchaseMenu(double balance) {
+    public String purchaseMenu(BigDecimal balance) {
         while (true) {
             System.out.println("(1) Feed Money");
             System.out.println("(2) Select Product");
             System.out.println("(3) Finish Transaction");
-            System.out.println("\nCurrent money provided: $" + balance);
+            System.out.println("\nCurrent money provided: $" + balance.toString());
             System.out.print(">>> ");
             String menuSelection = keyboard.nextLine();
             if (menuSelection.equals("1") || menuSelection.equals("2") || menuSelection.equals("3")) {
@@ -52,7 +53,7 @@ public class UserInterface {
         System.out.println("Nickels:" + nickels);
     }
 
-    public boolean selectProductDisplay(Stock stock, double balance, String itemCode){
+    public boolean selectProductDisplay(Stock stock, String itemCode){
         //displayMachineItems(stock);
         //System.out.println("Enter item code");
         if (!stock.getStockMap().containsKey(itemCode)){
@@ -63,7 +64,7 @@ public class UserInterface {
             System.out.println("SOLD OUT");
             return false;
         }
-        System.out.println(stock.getStockMap().get(itemCode).printMessage());
+
         return true;
     }
 
