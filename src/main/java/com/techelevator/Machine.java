@@ -1,8 +1,10 @@
 package com.techelevator;
 
 public class Machine {
+    //balance (starts at 0) (for each user session)
+
     //reads csv file
-    //creates an instance of Stock class, creates an instance of Item (Chip, Gum, Drink or Candy)
+    //creates an instance of Stock class,
     //add each key, value to Stock map (example --> A1  :  Wonka Bar )
     //loads UI options pages
 

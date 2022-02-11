@@ -15,7 +15,7 @@ public abstract class Item {
     //methods
     //printMessage (toString) - Abstract method - force it to be definited in chip, candy, etc. -
     //          when the item is vended "Crunch Crunch, Yum!" when in Chip class
-    //vendItem( ) method to subtract from current count when the user completes purchase
+    //decreaseCount( ) method to subtract from current count when the user completes purchase
     //              -- include logic to prevent negative count
 
     public abstract String printMessage();

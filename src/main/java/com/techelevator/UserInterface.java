@@ -2,11 +2,15 @@ package com.techelevator;
 
 public class UserInterface {
     //Scanner(System.in)
-    //balance (starts at 0)
+
 
 
 
     //printMainMenu() main menu
+    public String m
+
+
+
     //displayMachineItems() Display vending machine items (List<keys> (A1, A2, ) --> for each key in the list, get that item from map
     //              --prints out all keys and values in map
     //              --prints currentCount of the items, if current count is 0, display SOLD OUT
