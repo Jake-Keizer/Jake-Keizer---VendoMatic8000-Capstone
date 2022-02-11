@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -35,6 +36,10 @@ public class Machine {
 
         boolean running = true;
 
+        String activity;
+
+        BigDecimal oldBalance;
+
         while (running) {
 
             //-----------------------------------------------------------------
@@ -58,19 +63,23 @@ public class Machine {
                 int dimes = 0;
                 int nickels = 0;
 
-                if (purchaseMenuSelection.equals("1")) {
+                while (purchaseMenuSelection.equals("1")) {
                     System.out.println("Please feed money in whole dollar amounts of $1, $2, $5, or $10.");
                     System.out.print(">>> ");
                     String moneyFed = userInput.nextLine();
                     int money = Integer.parseInt(moneyFed);
                    if (money == 1 || money == 2 || money == 5 || money == 10){
+                       activity = "FEED MONEY";
+                       oldBalance = balance;
                        balance = balance.add(new BigDecimal(moneyFed));
+                       printToLog(activity, oldBalance, balance);
                        break;
                    }
                     System.out.println("Invalid input");
+                   break;
                 }
 
-                if (purchaseMenuSelection.equals("2")) {
+                while (purchaseMenuSelection.equals("2")) {
                     if (balance.compareTo(new BigDecimal("0")) == 0) {
                         System.out.println("You have a balance of $0. Please feed more money.");
                         break;
@@ -88,8 +97,13 @@ public class Machine {
                         }
                         System.out.println(stock.getStockMap().get(itemCode).printMessage());
                         stock.getStockMap().get(itemCode).decreaseCount();
+                        //PRINT TO LOG
+                        oldBalance = balance;
+                        activity =  stock.getStockMap().get(itemCode).getName() + " " + itemCode;
                         balance = balance.subtract(itemPrice);
+                        printToLog(activity, oldBalance, balance);
                     }
+                    break;
                 }
 
                 if (purchaseMenuSelection.equals("3")) {
@@ -98,9 +112,13 @@ public class Machine {
                     dimes = (quarterRemainder.divide(new BigDecimal("0.10"), 2, RoundingMode.UP)).intValue();                 //(int)(quarterRemainder / .10);
                     BigDecimal dimeremainder = quarterRemainder.remainder(new BigDecimal("0.10"));                                      //quarterRemainder % .10;
                     nickels = (dimeremainder.divide(new BigDecimal("0.05"), 2, RoundingMode.UP)).intValue();                  //(int)(dimeremainder / .05);
+                    oldBalance = balance;
+                    activity = "GIVE CHANGE";
                     balance = new BigDecimal("0.00");
+                    printToLog(activity, oldBalance, balance);
                     ui.finishTransactionDisplay(quarters, dimes, nickels);
                     mainMenuSelection = ui.mainMenu();
+                    //USE PRINT TO LOG
                 }
 
 
@@ -122,16 +140,16 @@ public class Machine {
 
         }
     }
-    public void printToLog(String activity, double oldBalance, double newBalance){
+    public boolean printToLog(String activity, BigDecimal oldBalance, BigDecimal newBalance){
         File logFile = new File("log.txt");
         try(PrintWriter logWriter = new PrintWriter(
                 new FileOutputStream(logFile, true))){
-            logWriter.println(LocalDateTime + " " + activity + ": $" + oldBalance + " $" + newBalance);
-
-
+            logWriter.println(new Date() + " " + activity + ": $" + oldBalance.toString() + " $" + newBalance.toString());
+            return true;
         }
         catch (Exception e){
-
+            System.out.println("Could not print to log.");
+            return false;
         }
     }
 
