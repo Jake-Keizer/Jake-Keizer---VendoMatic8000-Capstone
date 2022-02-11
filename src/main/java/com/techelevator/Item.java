@@ -29,9 +29,6 @@ public abstract class Item {
     }
 
     public void decreaseCount(){
-        if (currentCount == 0){
-            System.out.println("SOLD OUT");
-        }
         currentCount--;
     }
 

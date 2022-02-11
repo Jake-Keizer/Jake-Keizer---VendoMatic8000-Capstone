@@ -6,11 +6,8 @@ import java.util.Map;
 public class Stock {
 
     private Map<String, Item> stockMap = new HashMap<>();
-    //map
-    //key: A1      -->    instance of a chip
-    //key: A2      -->    instance of gum
 
-    private void restockMap(String location, String name, double price, String itemType){
+    public void restockMap(String location, String name, double price, String itemType){
         if (itemType.equals("Chip")){
             Item item = new Chips(name,price);
             stockMap.put(location, item);

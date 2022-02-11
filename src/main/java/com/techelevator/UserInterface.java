@@ -12,6 +12,7 @@ public class UserInterface {
             System.out.println("(1) Display vending machine items");
             System.out.println("(2) Purchase");
             System.out.println("(3) Exit");
+            System.out.print(">>> ");
             String menuSelection = keyboard.nextLine();
             if (menuSelection.equals("1") || menuSelection.equals("2") || menuSelection.equals("3")) {
                 return menuSelection;
@@ -25,7 +26,7 @@ public class UserInterface {
         List<String> keys = new ArrayList<>(keySet);
         Collections.sort(keys);
         for (String key : keys) {
-            System.out.println(key + stock.getStockMap().get(key).toString());
+            System.out.println(key + " " + stock.getStockMap().get(key).toString());
         }
     }
 
@@ -55,44 +56,16 @@ public class UserInterface {
         //System.out.println("Enter item code");
         if (!stock.getStockMap().containsKey(itemCode)){
             System.out.println("Item code does not exist!");
-            purchaseMenu(balance);
             return false;
         }
-        if (stock.getStockMap().get(itemCode).getCurrentCount() == 0){
+        if (stock.getStockMap().get(itemCode).getCurrentCount() <= 0){
             System.out.println("SOLD OUT");
-            purchaseMenu(balance);
             return false;
         }
         stock.getStockMap().get(itemCode).printMessage();
         return true;
     }
 
-
-    //printMainMenu() main menu
-    public String m
-
-
-
-    //displayMachineItems() Display vending machine items (List<keys> (A1, A2, ) --> for each key in the list, get that item from map
-    //              --prints out all keys and values in map
-    //              --prints currentCount of the items, if current count is 0, display SOLD OUT
-
-    //purchaseMenu()  ---- gives options to feed money, select product, or finish transaction
-
-    //after item is vended
-    //Candy.printMessage( )
-
-
-    //selectItem( ) --return invalid entry or out of stock if needed
-
-    //finishTransaction()   -- updates balance to 0, returns leftover balance to customer in smallest amount of coins
-    //                   -- displays the balance being returned
-
-    //
-
-    //
-
-    //
 
 
 }
