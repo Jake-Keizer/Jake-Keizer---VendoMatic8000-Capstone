@@ -36,6 +36,7 @@ public class UserInterface {
             System.out.println("(2) Select Product");
             System.out.println("(3) Finish Transaction");
             System.out.println("\nCurrent money provided: $" + balance);
+            System.out.print(">>> ");
             String menuSelection = keyboard.nextLine();
             if (menuSelection.equals("1") || menuSelection.equals("2") || menuSelection.equals("3")) {
                 return menuSelection;
@@ -62,7 +63,7 @@ public class UserInterface {
             System.out.println("SOLD OUT");
             return false;
         }
-        stock.getStockMap().get(itemCode).printMessage();
+        System.out.println(stock.getStockMap().get(itemCode).printMessage());
         return true;
     }
 
