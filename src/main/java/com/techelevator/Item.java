@@ -38,7 +38,7 @@ public abstract class Item {
         if (getCurrentCount() == 0){
             printCurrentCount = "SOLD OUT";
         }
-        return getName() + ":  $" +getPrice() +  ", Qty: "  + printCurrentCount;
+        return getName() + ": $" +getPrice() +  ", Qty: "  + printCurrentCount;
     }
 //methods
     //printMessage (toString) - Abstract method - force it to be definited in chip, candy, etc. -
