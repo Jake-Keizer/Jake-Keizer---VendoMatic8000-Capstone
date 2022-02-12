@@ -12,8 +12,6 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Machine {
-    //balance (starts at 0) (for each user session)
-    //private double balance = 0;
     private BigDecimal balance = new BigDecimal("0.00");
     private Object LocalDateTime;
 
@@ -67,7 +65,16 @@ public class Machine {
                     System.out.println("Please feed money in whole dollar amounts of $1, $2, $5, or $10.");
                     System.out.print(">>> ");
                     String moneyFed = userInput.nextLine();
-                    int money = Integer.parseInt(moneyFed);
+                    int money;
+                    try {
+                        money = Integer.parseInt(moneyFed);
+
+                    } catch (NumberFormatException e) {
+                        System.out.println("\n\n\nInvalid denomination.");
+                        System.out.println("Please try again.");
+                        continue;
+                    }
+
                    if (money == 1 || money == 2 || money == 5 || money == 10){
                        activity = "FEED MONEY";
                        oldBalance = balance;
@@ -75,8 +82,8 @@ public class Machine {
                        printToLog(activity, oldBalance, balance);
                        break;
                    }
-                    System.out.println("Invalid input");
-                   break;
+                    System.out.println("\n\n\nInvalid input");
+                    System.out.println("Please try again.");
                 }
 
                 while (purchaseMenuSelection.equals("2")) {
@@ -118,13 +125,11 @@ public class Machine {
                     printToLog(activity, oldBalance, balance);
                     ui.finishTransactionDisplay(quarters, dimes, nickels);
                     mainMenuSelection = ui.mainMenu();
-                    //USE PRINT TO LOG
                 }
 
 
             }
             //-------------------------------------------------------------------
-
 
 
 
@@ -136,10 +141,12 @@ public class Machine {
                 System.exit(0);
             }
             //---------------------------------------------------------------------
-
-
         }
     }
+
+
+
+
     public boolean printToLog(String activity, BigDecimal oldBalance, BigDecimal newBalance){
         File logFile = new File("log.txt");
         try(PrintWriter logWriter = new PrintWriter(
@@ -158,8 +165,6 @@ public class Machine {
     //read CSV file and create Stock
     public Stock readFile(File inputFile) {
         Stock stock = new Stock();
-        //private void restockMap(String location, String name, double price, String itemType)
-        //"A1|Potato Crisps|3.05|Chip"
         try (Scanner fileReader = new Scanner(inputFile)){
             while (fileReader.hasNextLine()) {
                 String line = fileReader.nextLine();
@@ -167,30 +172,11 @@ public class Machine {
                 double price = Double.parseDouble(itemArray[2]);
                 stock.restockMap(itemArray[0], itemArray[1], price, itemArray[3]);
             }
-
             return stock;
         } catch (FileNotFoundException e) {
             System.out.println("Invalid file!");
             return stock;
         }
     }
-
-
-
-
-
-
-    //balance (starts at 0)
-    //reads csv file
-    //creates an instance of Stock class,
-    //add each key, value to Stock map (example --> A1  :  Wonka Bar )
-    //loads UI options pages
-
-    //print to log file each time user puts money in or vends an item
-
-
-
-
-
 
 }

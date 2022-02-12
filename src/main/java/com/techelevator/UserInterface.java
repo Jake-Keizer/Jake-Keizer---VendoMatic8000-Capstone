@@ -4,9 +4,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class UserInterface {
-
     Scanner keyboard = new Scanner(System.in);
-    //Scanner(System.in)
 
     public String mainMenu() {
         while (true) {
@@ -64,7 +62,6 @@ public class UserInterface {
             System.out.println("SOLD OUT");
             return false;
         }
-
         return true;
     }
 
