@@ -6,14 +6,14 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class Machine {
+    //Machine keeps track of balance:
     private BigDecimal balance = new BigDecimal("0.00");
-    private Object LocalDateTime;
 
-    //tracks the item, and a Big Decimal array of the item's total items sold and individual price
+    //Track sales of all time:
+    // tracks the item, and a Big Decimal array of the total items sold and individual price
     //for instance, "Wonka Bar" : {40, 0.95}
     private static Map<String, BigDecimal[]> sales = new HashMap<>();
 
@@ -27,10 +27,6 @@ public class Machine {
         }
 
         initializeSalesMap(stock);
-
-        File mostRecentSalesReport = getLastModified(".");
-
-
 
         UserInterface ui = new UserInterface();
 
@@ -121,7 +117,7 @@ public class Machine {
 
                         //PRINT TO LOG
                         oldBalance = balance;
-                        activity =  stock.getStockMap().get(itemCode).getName() + " " + itemCode;
+                        activity =  itemName + " " + itemCode;
                         balance = balance.subtract(itemPrice);
                         printToLog(fileName,activity, oldBalance, balance);
                     }
@@ -131,9 +127,9 @@ public class Machine {
                 if (purchaseMenuSelection.equals("3")) {
                     quarters = (balance.divide(new BigDecimal("0.25"), 2, RoundingMode.UP)).intValue();
                     BigDecimal quarterRemainder = balance.remainder(new BigDecimal("0.25"));
-                    dimes = (quarterRemainder.divide(new BigDecimal("0.10"), 2, RoundingMode.UP)).intValue();                 //(int)(quarterRemainder / .10);
-                    BigDecimal dimeremainder = quarterRemainder.remainder(new BigDecimal("0.10"));                                      //quarterRemainder % .10;
-                    nickels = (dimeremainder.divide(new BigDecimal("0.05"), 2, RoundingMode.UP)).intValue();                  //(int)(dimeremainder / .05);
+                    dimes = (quarterRemainder.divide(new BigDecimal("0.10"), 2, RoundingMode.UP)).intValue();
+                    BigDecimal dimeremainder = quarterRemainder.remainder(new BigDecimal("0.10"));
+                    nickels = (dimeremainder.divide(new BigDecimal("0.05"), 2, RoundingMode.UP)).intValue();
                     oldBalance = balance;
                     activity = "GIVE CHANGE";
                     balance = new BigDecimal("0.00");
@@ -185,7 +181,7 @@ public class Machine {
                 }
             }
             //-----------------------------------------------------------------------
-
+            //end of run( ) method
 
         }
     }
@@ -225,8 +221,8 @@ public class Machine {
         }
     }
 
-    public void initializeSalesMap(Stock stock) {
 
+    public void initializeSalesMap(Stock stock) {
         for (Map.Entry<String, Item> slot : stock.getStockMap().entrySet()) {
             if (!sales.containsKey(slot.getValue().getName())) {
                 BigDecimal zero = new BigDecimal("0");
@@ -235,28 +231,6 @@ public class Machine {
                 sales.put(slot.getValue().getName(), new BigDecimal[]{zero, price});
             }
         }
-    }
-
-    public static File getLastModified(String directoryFilePath)
-    {
-        File directory = new File(directoryFilePath);
-        File[] files = directory.listFiles(File::isFile);
-        long lastModifiedTime = Long.MIN_VALUE;
-        File chosenFile = null;
-
-        if (files != null)
-        {
-            for (File file : files)
-            {
-                if (file.lastModified() > lastModifiedTime && file.getAbsolutePath().contains("Sales_Report_"))
-                {
-                    chosenFile = file;
-                    lastModifiedTime = file.lastModified();
-                }
-            }
-        }
-
-        return chosenFile;
     }
 
 
@@ -280,11 +254,6 @@ public class Machine {
             System.out.println("Sales Report file does not exist.");
         }
     }
-
-
-
-
-
 
 
 
