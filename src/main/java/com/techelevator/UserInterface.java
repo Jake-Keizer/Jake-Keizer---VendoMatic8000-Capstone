@@ -13,7 +13,7 @@ public class UserInterface {
             System.out.println("(3) Exit");
             System.out.print(">>> ");
             String menuSelection = keyboard.nextLine();
-            if (menuSelection.equals("1") || menuSelection.equals("2") || menuSelection.equals("3")) {
+            if (menuSelection.equals("1") || menuSelection.equals("2") || menuSelection.equals("3") || menuSelection.equals("4")) {
                 return menuSelection;
             }
             System.out.println("Incorrect selection please select either 1, 2, or 3");
