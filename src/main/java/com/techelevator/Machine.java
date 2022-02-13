@@ -34,6 +34,8 @@ public class Machine {
 
         boolean running = true;
 
+        String fileName = "log.txt";
+
         String activity;
 
         BigDecimal oldBalance;
@@ -79,7 +81,7 @@ public class Machine {
                        activity = "FEED MONEY";
                        oldBalance = balance;
                        balance = balance.add(new BigDecimal(moneyFed));
-                       printToLog(activity, oldBalance, balance);
+                       printToLog(fileName, activity, oldBalance, balance);
                        break;
                    }
                     System.out.println("\n\n\nInvalid input");
@@ -108,7 +110,7 @@ public class Machine {
                         oldBalance = balance;
                         activity =  stock.getStockMap().get(itemCode).getName() + " " + itemCode;
                         balance = balance.subtract(itemPrice);
-                        printToLog(activity, oldBalance, balance);
+                        printToLog(fileName,activity, oldBalance, balance);
                     }
                     break;
                 }
@@ -122,7 +124,7 @@ public class Machine {
                     oldBalance = balance;
                     activity = "GIVE CHANGE";
                     balance = new BigDecimal("0.00");
-                    printToLog(activity, oldBalance, balance);
+                    printToLog(fileName, activity, oldBalance, balance);
                     ui.finishTransactionDisplay(quarters, dimes, nickels);
                     mainMenuSelection = ui.mainMenu();
                 }
@@ -147,8 +149,8 @@ public class Machine {
 
 
 
-    public boolean printToLog(String activity, BigDecimal oldBalance, BigDecimal newBalance){
-        File logFile = new File("log.txt");
+    public boolean printToLog( String fileName, String activity, BigDecimal oldBalance, BigDecimal newBalance){
+        File logFile = new File(fileName);
         try(PrintWriter logWriter = new PrintWriter(
                 new FileOutputStream(logFile, true))){
             logWriter.println(new Date() + " " + activity + ": $" + oldBalance.toString() + " $" + newBalance.toString());
