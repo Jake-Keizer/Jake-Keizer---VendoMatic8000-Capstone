@@ -13,8 +13,8 @@ public class Machine {
     private BigDecimal balance = new BigDecimal("0.00");
     private Object LocalDateTime;
 
-    //tracks the item, and an integer array of the item's total items sold and individual price
-    //for instance, "Wonka Bar" : {40.0, 0.95}
+    //tracks the item, and a Big Decimal array of the item's total items sold and individual price
+    //for instance, "Wonka Bar" : {40, 0.95}
     private static Map<String, BigDecimal[]> sales = new HashMap<>();
 
 
@@ -30,7 +30,7 @@ public class Machine {
 
         File mostRecentSalesReport = getLastModified(".");
 
-        updateSalesMap(mostRecentSalesReport, sales);
+
 
         UserInterface ui = new UserInterface();
 
@@ -60,8 +60,6 @@ public class Machine {
                 mainMenuSelection = ui.mainMenu();
                 System.out.println("\n");
             }
-            //-----------------------------------------------------------------
-
 
 
 
@@ -120,7 +118,6 @@ public class Machine {
                         System.out.println(stock.getStockMap().get(itemCode).printMessage());
                         stock.getStockMap().get(itemCode).decreaseCount();
                         itemName = stock.getStockMap().get(itemCode).getName();
-                        updateSalesMap(itemName);
 
                         //PRINT TO LOG
                         oldBalance = balance;
@@ -147,7 +144,7 @@ public class Machine {
 
 
             }
-            //-------------------------------------------------------------------
+
 
 
 
@@ -158,13 +155,16 @@ public class Machine {
                 System.out.println("Thank you for your patronage!");
                 System.exit(0);
             }
-            //---------------------------------------------------------------------
+
 
 
             //----------------------------------------------------------------------
             //Hidden sales report menu:
 
             if (mainMenuSelection.equals("4")) {
+                File logFile = new File(fileName);
+                updateSalesMap(logFile, sales);
+
                 Date current = new Date();
                 String currentDate = current.toString();
                 String currentDateModified = currentDate.replaceAll(":", ".");
@@ -225,17 +225,6 @@ public class Machine {
         }
     }
 
-
-    //input: item location
-    //output: void (sales map is updated)
-    public void updateSalesMap(String name) {
-        if (sales.containsKey(name)) {
-            BigDecimal updatedSale = sales.get(name)[0].add(new BigDecimal("1"));
-            BigDecimal price = sales.get(name)[1];
-            sales.put(name, new BigDecimal[]{updatedSale, price});
-        }
-    }
-
     public void initializeSalesMap(Stock stock) {
 
         for (Map.Entry<String, Item> slot : stock.getStockMap().entrySet()) {
@@ -270,15 +259,20 @@ public class Machine {
         return chosenFile;
     }
 
-    public void updateSalesMap(File mostRecent, Map<String, BigDecimal[]> sales) {
-        try (Scanner dataInput = new Scanner(mostRecent)) {
+
+    public void updateSalesMap(File logFile, Map<String, BigDecimal[]> sales) {
+        try (Scanner dataInput = new Scanner(logFile)) {
             while(dataInput.hasNextLine()) {
                 String line = dataInput.nextLine();
-                String[] lineArray = line.split("\\|");
-                if (sales.containsKey(lineArray[0])) {
-                    BigDecimal countFromReport = new BigDecimal(lineArray[1]);
-                    BigDecimal price = sales.get(lineArray[0])[1];
-                    sales.put(lineArray[0], new BigDecimal[]{countFromReport, price});
+                String[] lineArray = line.split(" ");
+                if (!line.contains("GIVE CHANGE") && !line.contains("FEED MONEY")) {
+                    for (Map.Entry<String, BigDecimal[]> item : sales.entrySet()) {
+                        if (line.contains(item.getKey())) {
+                            BigDecimal updatedCount = item.getValue()[0].add(new BigDecimal("1"));
+                            BigDecimal price = item.getValue()[1];
+                            sales.put(item.getKey(), new BigDecimal[]{updatedCount, price});
+                        }
+                    }
                 }
 
             }
@@ -286,6 +280,8 @@ public class Machine {
             System.out.println("Sales Report file does not exist.");
         }
     }
+
+
 
 
 
