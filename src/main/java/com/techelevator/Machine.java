@@ -44,8 +44,6 @@ public class Machine {
 
         BigDecimal oldBalance;
 
-        String itemName;
-
         while (running) {
 
             //-----------------------------------------------------------------
@@ -83,16 +81,20 @@ public class Machine {
                         System.out.println("Please try again.");
                         continue;
                     }
-
+                    if (money == 0) {
+                        break;
+                    }
                    if (money == 1 || money == 2 || money == 5 || money == 10){
                        activity = "FEED MONEY";
                        oldBalance = balance;
                        balance = balance.add(new BigDecimal(moneyFed));
                        printToLog(fileName, activity, oldBalance, balance);
-                       break;
+                       System.out.println("Accepted! Feed more money or press zero to go back to the purchase menu.");
+                       System.out.println("\nCurrent money provided: $" + balance.toString());
+                   } else {
+                       System.out.println("\n\n\nInvalid input");
+                       System.out.println("Please try again.");
                    }
-                    System.out.println("\n\n\nInvalid input");
-                    System.out.println("Please try again.");
                 }
 
                 while (purchaseMenuSelection.equals("2")) {
@@ -104,6 +106,7 @@ public class Machine {
                     System.out.println("Enter item code");
                     System.out.print(">>> ");
                     String itemCode = userInput.nextLine();
+                    System.out.println(" ");
                     boolean productSelection = ui.selectProductDisplay(stock, itemCode);
                     if (productSelection) {
                         BigDecimal itemPrice = BigDecimal.valueOf(stock.getStockMap().get(itemCode).getPrice());
@@ -111,15 +114,18 @@ public class Machine {
                             System.out.println("Balance is insufficient. Please feed more money.");
                             break;
                         }
-                        System.out.println(stock.getStockMap().get(itemCode).printMessage());
-                        stock.getStockMap().get(itemCode).decreaseCount();
-                        itemName = stock.getStockMap().get(itemCode).getName();
+                        Item vend = stock.getStockMap().get(itemCode);
 
-                        //PRINT TO LOG
+                        //PRINT TO LOG file and adjust balance:
                         oldBalance = balance;
-                        activity =  itemName + " " + itemCode;
+                        activity =  vend.getName() + " " + itemCode;
                         balance = balance.subtract(itemPrice);
                         printToLog(fileName,activity, oldBalance, balance);
+
+                        //vend item and decrease count
+                        System.out.println("Vended: " + vend.getName() + " for $" + vend.getPrice() + "   New Balance: $" + balance.toString());
+                        System.out.println(stock.getStockMap().get(itemCode).printMessage());
+                        stock.getStockMap().get(itemCode).decreaseCount();
                     }
                     break;
                 }
